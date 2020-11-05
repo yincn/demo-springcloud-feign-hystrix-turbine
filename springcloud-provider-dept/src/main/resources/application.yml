@@ -1,0 +1,47 @@
+spring: 
+  profiles:
+    active: dev
+  application:
+    name: provider-dept
+  jackson:
+    default-property-inclusion: non-null
+
+server:
+  port: 8021
+  tomcat:
+    uri-encoding: UTF-8
+
+logging:
+  config: classpath:logback-boot.xml
+  path: /project/logs/@project.parent.artifactId@/${spring.application.name}
+
+info: 
+  app.name: microservice-springcloud
+
+feign:
+  hystrix:
+    enabled: true
+
+---
+spring:
+  profiles: dev
+      
+eureka:
+  client: 
+    service-url: 
+      defaultZone: http://127.0.0.1:8001/eureka/
+  instance: 
+    instance-id: ${spring.application.name}
+    prefer-ip-address: true
+        
+---
+spring:
+  profiles: test
+    
+eureka:
+  client: 
+    service-url: 
+      defaultZone: http://127.0.0.1:8001/eureka/
+  instance:
+    instance-id: ${spring.application.name}
+    prefer-ip-address: true

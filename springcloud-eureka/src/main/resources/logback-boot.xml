@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<configuration>
+    <springProperty scope="context" name="logPath" source="logging.path"/>
+    <springProperty scope="context" name="applicationName" source="spring.application.name"/>
+    <!-- %m输出的信息,%p日志级别,%t线程名,%d日期,%c类的全名,%i索引【从数字0开始递增】,,, -->      
+    <!-- appender是configuration的子节点，是负责写日志的组件。 -->  
+    <!-- ConsoleAppender：把日志输出到控制台 -->  
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">      
+        <encoder>      
+            <pattern>%d %p %thread (%file:%line\)- %m%n</pattern>
+            <!-- 控制台也要使用UTF-8，不要使用GBK，否则会中文乱码 -->  
+            <charset>UTF-8</charset>     
+        </encoder>      
+    </appender>      
+    <appender name="infolog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${logPath}/${applicationName}_sys.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/backup/${applicationName}_sys_%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+            <maxHistory>360</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d %p %thread (%file:%line\)- %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <appender name="errorlog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${logPath}/${applicationName}_error.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/backup/${applicationName}_error_%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+            <maxHistory>360</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d %p %thread (%file:%line\)- %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    
+    <root level="INFO">
+        <appender-ref ref="stdout" />      
+        <appender-ref ref="infolog" />
+        <appender-ref ref="errorlog" />
+    </root>
+</configuration>  

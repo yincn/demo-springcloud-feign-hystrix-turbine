@@ -1,0 +1,55 @@
+spring: 
+  application:
+    name: hystrix-turbine
+  profiles:
+    active: dev
+
+server:
+  port: 8081
+
+logging:
+  config: classpath:logback-boot.xml
+  path: /project/logs/@project.parent.artifactId@/${spring.application.name}
+
+info:
+  app.name: microservice-springcloud
+
+turbine:
+  app-config: provider-user,provider-dept
+  aggregator:
+    cluster-config: default
+  cluster-name-expression: new String("default")
+
+hystrix:
+  dashboard:
+    proxy-stream-allow-list: "*"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+---
+spring:
+  profiles: dev
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8001/eureka/
+  instance:
+    instance-id: ${spring.application.name}
+    prefer-ip-address: true
+
+---
+spring:
+  profiles: test
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8001/eureka/
+  instance:
+    instance-id: ${spring.application.name}
+    prefer-ip-address: true
